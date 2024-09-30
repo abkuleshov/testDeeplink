@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Page</title>
+    <script>
+        // Отправляем сообщение родительской странице, что приложение открыто
+        window.onload = function() {
+            window.opener.postMessage("appOpened", "*");
+        };
+    </script>
+</head>
+<body>
+    <h1>Приложение открыто!</h1>
+</body>
+</html>

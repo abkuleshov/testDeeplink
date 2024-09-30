@@ -7,41 +7,45 @@
     <script>
         function checkApps() {
             console.log("Начинаем проверку приложений...");
-            let appFound = false; // Флаг для отслеживания найденного приложения
-
             checkApp("triptally:///qr_auth?qr_token=e234234", function() {
                 console.log("Triptally не найдено, проверяем KittyCash...");
                 checkApp("kittycash:///qr_auth?qr_token=e234234", function() {
                     console.log("Ни одно приложение не найдено, переходим на page1.html.");
-                    if (!appFound) {
-                        window.location = "page1.html"; // Переход, если ни одно приложение не найдено
-                    }
+                    window.location = "page1.html";
                 });
             });
+        }
 
-            // Вложенная функция для проверки приложения
-            function checkApp(deepLink, callback) {
-                console.log(`Проверяем диплинк: ${deepLink}`);
-                let iframe = document.createElement("iframe");
-                iframe.style.display = "none"; // Скрываем iframe
-                iframe.src = deepLink;
-                document.body.appendChild(iframe);
+        function checkApp(deepLink, fallbackCallback) {
+            let isRedirected = false;
+            console.log(`Проверяем диплинк: ${deepLink}`);
+            let iframe = document.createElement("iframe");
+            iframe.style.display = "none"; // Скрываем iframe
+            iframe.src = deepLink;
+            document.body.appendChild(iframe);
 
-                setTimeout(function() {
-                    // Проверяем, сработал ли диплинк
-                    if (!appFound) {
-                        console.log(`Диплинк ${deepLink} не сработал.`);
-                        callback(); // Вызов колбэка для следующего приложения
-                    } else {
-                        console.log(`Диплинк ${deepLink} сработал, приложение открыто.`);
-                    }
-                }, 2000); // Увеличенное время ожидания 2 секунды
+            // Увеличиваем тайм-аут для лучшей проверки
+            setTimeout(function() {
+                if (!isRedirected) {
+                    console.log(`Диплинк ${deepLink} не сработал, вызываем fallback.`);
+                    fallbackCallback();
+                } else {
+                    console.log(`Диплинк ${deepLink} сработал, приложение открыто.`);
+                }
+            }, 5000); // Увеличенное время ожидания до 5 секунд
 
-                window.addEventListener("blur", function() {
-                    appFound = true; // Если пользователь переключился на другое окно, считаем приложение найденным
-                    console.log(`Пользователь переключился на другое окно. Диплинк ${deepLink} сработал.`);
-                });
-            }
+            window.addEventListener("blur", function() {
+                isRedirected = true;
+                console.log(`Пользователь переключился на другое окно. Диплинк ${deepLink} сработал.`);
+            });
+
+            window.addEventListener("message", function(event) {
+                if (event.data === "appOpened") {
+                    console.log(`Приложение открылось через диплинк: ${deepLink}`);
+                    isRedirected = true;
+                    document.body.removeChild(iframe); // Удаляем iframe
+                }
+            });
         }
 
         // Обработчик события загрузки
@@ -52,7 +56,7 @@
     </script>
 </head>
 <body>
-    <h1>Ищем приложения</h1>
-    <button id="checkBothApps">Найти приложение v2</button>
+    <h1>Ищем приложения v4</h1>
+    <button id="checkBothApps">Найти приложение</button>
 </body>
 </html>
