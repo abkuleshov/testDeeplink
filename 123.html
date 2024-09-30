@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Check</title>
+    <script>
+        function checkApps() {
+            checkApp("triptally://qr_auth?qr_token=e234234", function() {
+                checkApp("kittycash://qr_auth?qr_token=e234234", function() {
+                    window.location = "https://web.alfabank.ru";
+                });
+            });
+        }
+
+        function checkApp(deepLink, fallbackCallback) {
+            let isRedirected = false;
+            let iframe = document.createElement("iframe");
+            iframe.style.display = "none"; // Скрываем iframe
+            iframe.src = deepLink;
+            document.body.appendChild(iframe);
+
+            setTimeout(function() {
+                if (!isRedirected) {
+                    fallbackCallback();
+                }
+            }, 2000);
+
+            window.addEventListener("blur", function() {
+                isRedirected = true;
+            });
+        }
+
+        // Обработчик события загрузки
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("checkBothApps").addEventListener("click", checkApps);
+        });
+    </script>
+</head>
+<body>
+    <h1>Check for Installed Apps</h1>
+    <button id="checkBothApps">Check YourApp1 and YourApp2</button>
+</body>
+</html>
