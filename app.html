@@ -7,7 +7,7 @@
     <script>
         // Отправляем сообщение родительской странице, что приложение открыто
         window.onload = function() {
-            window.opener.postMessage("appOpened", "*");
+            window.opener.postMessage("appOpened", window.location.origin); // Уточнение источника
         };
     </script>
 </head>

@@ -39,13 +39,18 @@
                 console.log(`Пользователь переключился на другое окно. Диплинк ${deepLink} сработал.`);
             });
 
-            window.addEventListener("message", function(event) {
+            // Обработчик события message
+            function handleMessage(event) {
+                if (event.origin !== window.location.origin) return; // Проверка источника
                 if (event.data === "appOpened") {
                     console.log(`Приложение открылось через диплинк: ${deepLink}`);
                     isRedirected = true;
                     document.body.removeChild(iframe); // Удаляем iframe
+                    window.removeEventListener("message", handleMessage); // Удаляем обработчик
                 }
-            });
+            }
+
+            window.addEventListener("message", handleMessage);
         }
 
         // Обработчик события загрузки
@@ -56,7 +61,7 @@
     </script>
 </head>
 <body>
-    <h1>Ищем приложения v4</h1>
+    <h1>Ищем приложения v5</h1>
     <button id="checkBothApps">Найти приложение</button>
 </body>
 </html>
