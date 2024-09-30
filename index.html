@@ -6,8 +6,11 @@
     <title>App Check</title>
     <script>
         function checkApps() {
+            console.log("Начинаем проверку приложений...");
             checkApp("triptally:///qr_auth?qr_token=e234234", function() {
+                console.log("Triptally не найдено, проверяем KittyCash...");
                 checkApp("kittycash:///qr_auth?qr_token=e234234", function() {
+                    console.log("Ни одно приложение не найдено, переходим на page1.html.");
                     // Если ни одно из приложений не найдено, перенаправляем на page1.html.
                     window.location = "page1.html";
                 });
@@ -16,6 +19,7 @@
 
         function checkApp(deepLink, fallbackCallback) {
             let isRedirected = false;
+            console.log(`Проверяем диплинк: ${deepLink}`);
             let iframe = document.createElement("iframe");
             iframe.style.display = "none"; // Скрываем iframe
             iframe.src = deepLink;
@@ -23,17 +27,22 @@
 
             setTimeout(function() {
                 if (!isRedirected) {
+                    console.log(`Диплинк ${deepLink} не сработал, вызываем fallback.`);
                     fallbackCallback();
+                } else {
+                    console.log(`Диплинк ${deepLink} сработал, приложение открыто.`);
                 }
-            }, 2000);
+            }, 5000); // Увеличенное время ожидания
 
             window.addEventListener("blur", function() {
                 isRedirected = true;
+                console.log(`Пользователь переключился на другое окно. Диплинк ${deepLink} сработал.`);
             });
         }
 
         // Обработчик события загрузки
         document.addEventListener("DOMContentLoaded", function() {
+            console.log("Документ загружен. Добавляем обработчик события.");
             document.getElementById("checkBothApps").addEventListener("click", checkApps);
         });
     </script>
