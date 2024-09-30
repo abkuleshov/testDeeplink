@@ -6,9 +6,10 @@
     <title>App Check</title>
     <script>
         function checkApps() {
-            checkApp("triptally://qr_auth?qr_token=e234234", function() {
-                checkApp("kittycash://qr_auth?qr_token=e234234", function() {
-                    window.location = "https://web.alfabank.ru";
+            checkApp("triptally:///qr_auth?qr_token=e234234", function() {
+                checkApp("kittycash:///qr_auth?qr_token=e234234", function() {
+                    // Если ни одно из приложений не найдено, перенаправляем на page1.html.
+                    window.location = "page1.html";
                 });
             });
         }
