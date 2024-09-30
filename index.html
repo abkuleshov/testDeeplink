@@ -5,52 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App Check</title>
     <script>
-        (function() {
-            function checkApps() {
-                console.log("Начинаем проверку приложений...");
-                checkApp("triptally:///qr_auth?qr_token=e234234", function() {
-                    console.log("Triptally не найдено, проверяем KittyCash...");
-                    checkApp("kittycash:///qr_auth?qr_token=e234234", function() {
-                        console.log("Ни одно приложение не найдено, переходим на page1.html.");
-                        window.location = "page1.html";
-                    });
+        function checkApps() {
+            console.log("Начинаем проверку приложений...");
+            checkApp("triptally:///qr_auth?qr_token=e234234", function() {
+                console.log("Triptally не найдено, проверяем KittyCash...");
+                checkApp("kittycash:///qr_auth?qr_token=e234234", function() {
+                    console.log("Ни одно приложение не найдено, переходим на page1.html.");
+                    window.location = "page1.html";
                 });
-            }
+            });
+        }
 
-            function checkApp(deepLink, fallbackCallback) {
-                let isRedirected = false;
-                console.log(`Проверяем диплинк: ${deepLink}`);
+        function checkApp(deepLink, fallbackCallback) {
+            console.log(`Проверяем диплинк: ${deepLink}`);
+
+            // Пробуем открыть диплинк в текущем окне
+            window.location = deepLink;
+
+            // Устанавливаем тайм-аут для проверки, сработал ли диплинк
+            setTimeout(function() {
+                // Если приложение не открылось, используем iframe
+                console.log(`Диплинк ${deepLink} не сработал, вызываем fallback.`);
                 let iframe = document.createElement("iframe");
                 iframe.style.display = "none"; // Скрываем iframe
                 iframe.src = deepLink;
                 document.body.appendChild(iframe);
+                fallbackCallback();
+            }, 2000); // 2 секунды ожидания
+        }
 
-                setTimeout(function() {
-                    if (!isRedirected) {
-                        console.log(`Диплинк ${deepLink} не сработал, вызываем fallback.`);
-                        fallbackCallback();
-                    } else {
-                        console.log(`Диплинк ${deepLink} сработал, приложение открыто.`);
-                    }
-                }, 10000); // Увеличенное время ожидания до 10 секунд
-
-                window.addEventListener("blur", function() {
-                    isRedirected = true;
-                    console.log(`Пользователь переключился на другое окно. Диплинк ${deepLink} сработал.`);
-                });
-
-                console.log("iframe добавлен в DOM для диплинка: " + deepLink);
-            }
-
-            document.addEventListener("DOMContentLoaded", function() {
-                console.log("Документ загружен. Добавляем обработчик события.");
-                document.getElementById("checkBothApps").addEventListener("click", checkApps);
-            });
-        })();
+        // Обработчик события загрузки
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("Документ загружен. Добавляем обработчик события.");
+            document.getElementById("checkBothApps").addEventListener("click", checkApps);
+        });
     </script>
 </head>
 <body>
-    <h1>Ищем приложения v5</h1>
+    <h1>Ищем приложения v1</h1>
     <button id="checkBothApps">Найти приложение</button>
 </body>
 </html>
