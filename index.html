@@ -17,41 +17,40 @@
         }
 
         function checkApp(deepLink, fallbackCallback) {
-            let isRedirected = false;
-            console.log(`Проверяем диплинк: ${deepLink}`);
-            let iframe = document.createElement("iframe");
-            iframe.style.display = "none"; // Скрываем iframe
-            iframe.src = deepLink;
-            document.body.appendChild(iframe);
+    let isRedirected = false;
+    console.log(`Проверяем диплинк: ${deepLink}`);
+    
+    // Попробуем открыть deeplink в текущем окне
+    window.location.href = deepLink;
 
-            // Увеличиваем тайм-аут для лучшей проверки
-            setTimeout(function() {
-                if (!isRedirected) {
-                    console.log(`Диплинк ${deepLink} не сработал, вызываем fallback.`);
-                    fallbackCallback();
-                } else {
-                    console.log(`Диплинк ${deepLink} сработал, приложение открыто.`);
-                }
-            }, 5000); // Увеличенное время ожидания до 5 секунд
-
-            window.addEventListener("blur", function() {
-                isRedirected = true;
-                console.log(`Пользователь переключился на другое окно. Диплинк ${deepLink} сработал.`);
-            });
-
-            // Обработчик события message
-            function handleMessage(event) {
-                if (event.origin !== window.location.origin) return; // Проверка источника
-                if (event.data === "appOpened") {
-                    console.log(`Приложение открылось через диплинк: ${deepLink}`);
-                    isRedirected = true;
-                    document.body.removeChild(iframe); // Удаляем iframe
-                    window.removeEventListener("message", handleMessage); // Удаляем обработчик
-                }
-            }
-
-            window.addEventListener("message", handleMessage);
+    // Увеличиваем тайм-аут для лучшей проверки
+    setTimeout(function() {
+        if (!isRedirected) {
+            console.log(`Диплинк ${deepLink} не сработал, вызываем fallback.`);
+            fallbackCallback();
+        } else {
+            console.log(`Диплинк ${deepLink} сработал, приложение открыто.`);
         }
+    }, 5000); // Увеличенное время ожидания до 5 секунд
+
+    window.addEventListener("blur", function() {
+        isRedirected = true;
+        console.log(`Пользователь переключился на другое окно. Диплинк ${deepLink} сработал.`);
+    });
+
+    // Обработчик события message
+    function handleMessage(event) {
+        if (event.origin !== window.location.origin) return; // Проверка источника
+        if (event.data.messageCode === "authComplete") {
+            console.log(`Приложение открылось через диплинк: ${deepLink}`);
+            isRedirected = true;
+            window.removeEventListener("message", handleMessage); // Удаляем обработчик
+        }
+    }
+
+    window.addEventListener("message", handleMessage);
+}
+
 
         // Обработчик события загрузки
         document.addEventListener("DOMContentLoaded", function() {
@@ -61,7 +60,7 @@
     </script>
 </head>
 <body>
-    <h1>Ищем приложения v5</h1>
+    <h1>Ищем приложения v6</h1>
     <button id="checkBothApps">Найти приложение</button>
 </body>
 </html>

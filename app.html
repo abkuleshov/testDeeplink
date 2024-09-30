@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App Page</title>
     <script>
-        // Отправляем сообщение родительской странице, что приложение открыто
-        window.onload = function() {
-            window.opener.postMessage("appOpened", window.location.origin); // Уточнение источника
-        };
+        // Функция для отправки сообщения о успешном открытии приложения
+        function sendSuccessMessage() {
+            const message = {
+                messageCode: "authComplete",
+                data: { /* Здесь можно добавить данные о пользователе или токене */ }
+            };
+            window.opener.postMessage(message, "*"); // Отправка сообщения родительскому окну
+            window.close(); // Закрываем текущее окно
+        }
+
+        // Обработчик события загрузки
+        window.addEventListener("DOMContentLoaded", function() {
+            console.log("App Page загружена. Отправляем сообщение об успешном открытии приложения.");
+            sendSuccessMessage(); // Отправляем сообщение об успешном открытии
+        });
     </script>
 </head>
 <body>
-    <h1>Приложение открыто!</h1>
+    <h1>Приложение открыто успешно!</h1>
 </body>
 </html>
