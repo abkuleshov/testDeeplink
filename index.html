@@ -32,7 +32,7 @@
                 } else {
                     console.log(`Диплинк ${deepLink} сработал, приложение открыто.`);
                 }
-            }, 5000); // Увеличенное время ожидания
+            }, 10000); // Увеличенное время ожидания
 
             window.addEventListener("blur", function() {
                 isRedirected = true;
@@ -48,7 +48,7 @@
     </script>
 </head>
 <body>
-    <h1>Ищем приложения</h1>
+    <h1>Ищем приложения v2</h1>
     <button id="checkBothApps">Найти приложение</button>
 </body>
 </html>
