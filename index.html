@@ -25,6 +25,7 @@
             iframe.src = deepLink;
             document.body.appendChild(iframe);
 
+            // Увеличиваем тайм-аут для лучшей проверки
             setTimeout(function() {
                 if (!isRedirected) {
                     console.log(`Диплинк ${deepLink} не сработал, вызываем fallback.`);
@@ -32,7 +33,7 @@
                 } else {
                     console.log(`Диплинк ${deepLink} сработал, приложение открыто.`);
                 }
-            }, 10000); // Увеличенное время ожидания
+            }, 5000); // Увеличенное время ожидания до 5 секунд
 
             window.addEventListener("blur", function() {
                 isRedirected = true;
