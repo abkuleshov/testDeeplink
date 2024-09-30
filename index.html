@@ -19,11 +19,10 @@
         function checkApp(deepLink, fallbackCallback) {
     let isRedirected = false;
     console.log(`Проверяем диплинк: ${deepLink}`);
-    
-    // Попробуем открыть deeplink в текущем окне
-    window.location.href = deepLink;
 
-    // Увеличиваем тайм-аут для лучшей проверки
+    // Используем window.location.assign для открытия deeplink
+    window.location.assign(deepLink);
+
     setTimeout(function() {
         if (!isRedirected) {
             console.log(`Диплинк ${deepLink} не сработал, вызываем fallback.`);
@@ -52,6 +51,7 @@
 }
 
 
+
         // Обработчик события загрузки
         document.addEventListener("DOMContentLoaded", function() {
             console.log("Документ загружен. Добавляем обработчик события.");
@@ -60,7 +60,7 @@
     </script>
 </head>
 <body>
-    <h1>Ищем приложения v6</h1>
+    <h1>Ищем приложения v1</h1>
     <button id="checkBothApps">Найти приложение</button>
 </body>
 </html>
