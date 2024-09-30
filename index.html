@@ -32,12 +32,14 @@
                     } else {
                         console.log(`Диплинк ${deepLink} сработал, приложение открыто.`);
                     }
-                }, 5000); // Увеличенное время ожидания до 5 секунд
+                }, 10000); // Увеличенное время ожидания до 10 секунд
 
                 window.addEventListener("blur", function() {
                     isRedirected = true;
                     console.log(`Пользователь переключился на другое окно. Диплинк ${deepLink} сработал.`);
                 });
+
+                console.log("iframe добавлен в DOM для диплинка: " + deepLink);
             }
 
             document.addEventListener("DOMContentLoaded", function() {
@@ -48,7 +50,7 @@
     </script>
 </head>
 <body>
-    <h1>Ищем приложения v4</h1>
+    <h1>Ищем приложения v5</h1>
     <button id="checkBothApps">Найти приложение</button>
 </body>
 </html>
