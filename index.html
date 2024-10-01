@@ -26,28 +26,29 @@
             const app = apps[index];
             console.log(`Проверяем диплинк: ${app.url}`);
             let isRedirected = false;
-            const iframe = document.createElement("iframe");
-            iframe.style.display = "none";
-            iframe.src = app.url;
-            document.body.appendChild(iframe);
 
-            // Увеличиваем тайм-аут для проверки
+            // Устанавливаем обработчик для события ухода пользователя со страницы
+            const blurListener = () => {
+                isRedirected = true;
+                console.log(`Пользователь переключился на другое окно. Диплинк ${app.url} сработал.`);
+            };
+
+            window.addEventListener("blur", blurListener);
+
+            // Пытаемся открыть приложение через window.location
+            window.location = app.url;
+
+            // Ждем некоторое время для проверки, произошло ли переключение
             setTimeout(() => {
+                window.removeEventListener("blur", blurListener);
                 if (!isRedirected) {
                     console.log(`Диплинк ${app.url} не сработал, проверяем следующее приложение...`);
-                    document.body.removeChild(iframe); // Удаляем iframe
                     checkApp(apps, index + 1); // Проверяем следующее приложение
                 } else {
                     console.log(`Приложение ${app.name} открылось.`);
-                    alert(`Приложение ${app.name} открыто!`); // Предложить пользователю открыть приложение
-                    document.body.removeChild(iframe); // Удаляем iframe
+                    alert(`Приложение ${app.name} открыто!`);
                 }
             }, 3000); // Ожидание 3 секунды
-
-            window.addEventListener("blur", () => {
-                isRedirected = true;
-                console.log(`Пользователь переключился на другое окно. Диплинк ${app.url} сработал.`);
-            });
         }
 
         // Обработчик события загрузки
@@ -58,7 +59,7 @@
     </script>
 </head>
 <body>
-    <h1>Ищем установленные приложения</h1>
+    <h1>Ищем установленные приложения 1</h1>
     <button id="checkAppsButton">Проверить приложения</button>
 </body>
 </html>
